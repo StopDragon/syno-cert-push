@@ -33,7 +33,7 @@ certificate and pushes any change into DSM via the official WebAPI.
 ## Install
 
 ```bash
-git clone https://github.com/<you>/syno-cert-push.git
+git clone https://github.com/StopDragon/syno-cert-push.git
 cd syno-cert-push
 sudo ./install.sh
 ```
