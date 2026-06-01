@@ -1,7 +1,7 @@
 # syno-cert-push
 
 Push the TLS certificate that **Nginx Proxy Manager (NPM)** already issues and
-renews into **Synology DSM** automatically — so services that bypass the reverse
+renews into **Synology DSM** automatically -- so services that bypass the reverse
 proxy (e.g. **Synology Drive on port 6690**) always serve a fresh certificate
 without the quarterly manual export/import dance.
 
@@ -9,7 +9,7 @@ without the quarterly manual export/import dance.
 
 NPM renews its own certificate, but it can only serve ports it proxies. The
 Synology Drive desktop client connects on TCP **6690**, which is not an HTTP
-service and is typically port-forwarded straight to the NAS — so the NAS itself
+service and is typically port-forwarded straight to the NAS -- so the NAS itself
 must hold the certificate. This script closes that gap: it watches NPM's
 certificate and pushes any change into DSM via the official WebAPI.
 
@@ -21,7 +21,7 @@ certificate and pushes any change into DSM via the official WebAPI.
    the certificate actually changed.
 3. **Pushes via DSM WebAPI** (`SYNO.Core.Certificate` import), replacing the
    existing certificate in place so the service mapping (incl. 6690) is kept.
-4. **2FA via device_id** — register once with `--init` (enter an OTP), then it
+4. **2FA via device_id** -- register once with `--init` (enter an OTP), then it
    logs in without OTP. No TOTP secret stored on disk.
 
 ## Requirements
@@ -62,7 +62,7 @@ Synology Drive (6690) to the certificate once. Done.
 
 | Symptom | Cause / Fix |
 |---|---|
-| Login error **403** in auto mode | `device_id` expired → run `--init` again |
+| Login error **403** in auto mode | `device_id` expired -> run `--init` again |
 | **404** at login | Wrong OTP code |
 | **105** on import | Account is not in the *administrators* group |
 | "cert not found" | `DRIVE_DOMAIN` / `NPM_LIVE_DIR` mismatch; check the SAN of the live cert |
@@ -75,4 +75,4 @@ Synology Drive (6690) to the certificate once. Done.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT -- see [LICENSE](LICENSE).

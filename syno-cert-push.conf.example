@@ -1,33 +1,33 @@
-# syno-cert-push.conf  — /etc/syno-cert-push.conf 로 두고 권한 600 권장
+# syno-cert-push.conf  -- place at /etc/syno-cert-push.conf, mode 600
 # chmod 600 /etc/syno-cert-push.conf
 
-# NPM(Docker)의 Let's Encrypt 인증서 'live' 디렉토리 — '호스트'에서 보이는 경로.
-# NPM 표준 compose 구성은 letsencrypt를 /etc/letsencrypt 별도 볼륨에 둔다:
+# NPM (Docker) Let's Encrypt 'live' directory -- the path as seen on the HOST.
+# The standard NPM compose layout keeps letsencrypt on its own /etc/letsencrypt volume:
 #     volumes:  - ./letsencrypt:/etc/letsencrypt
-#   → 호스트 경로 예) /opt/npm/letsencrypt/live
-# 일부 구성은 /data 안에 둔다 → /opt/npm/data/letsencrypt/live
-# 확인:  docker inspect <npm컨테이너> --format \
-#          '{{range .Mounts}}{{.Source}} -> {{.Destination}}{{"\n"}}{{end}}'
+#   -> host path e.g. /opt/npm/letsencrypt/live
+# Some setups keep it under /data -> /opt/npm/data/letsencrypt/live
+# Find it with:
+#   docker inspect <npm_container> --format '{{range .Mounts}}{{.Source}} -> {{.Destination}}{{"\n"}}{{end}}'
 NPM_LIVE_DIR=/opt/npm/letsencrypt/live
 
-# 시놀로지 드라이브용 단일 도메인
-DRIVE_DOMAIN=drive.ravnus.com
+# The (single) domain whose certificate should be pushed to Synology
+DRIVE_DOMAIN=drive.example.com
 
-# 시놀로지 DSM 접속 (NPM 서버에서 도달 가능한 내부 IP)
+# Synology DSM, reachable from this host (internal IP is fine)
 SYNO_SCHEME=https
-SYNO_HOST=10.0.5.10
+SYNO_HOST=192.168.1.10
 SYNO_PORT=5001
-SYNO_INSECURE=1          # 내부 IP의 https는 CN 불일치 → 1 유지 권장
+SYNO_INSECURE=1          # internal-IP https has a CN mismatch -> keep 1
 
-# 인증서 푸시 권한이 있는 '관리자 그룹' 계정 (전용 계정 권장)
+# An account in the 'administrators' group (a dedicated user is recommended)
 SYNO_USER=acme
 SYNO_PASS=changeme
 
-# 시놀로지 '제어판 > 보안 > 인증서' 목록에 보이는 교체 대상 인증서의 '설명(desc)'.
-# 이 설명과 일치하는 인증서를 내용만 교체(서비스 매핑 유지).
-SYNO_CERT_DESC=drive.ravnus.com
-SYNO_CREATE=0            # 일치 인증서가 없을 때 신규 생성하려면 1
+# The 'description' shown in DSM > Security > Certificate for the cert to replace.
+# The cert with this description is replaced in place (service mapping is kept).
+SYNO_CERT_DESC=drive.example.com
+SYNO_CREATE=0            # set 1 to create a new cert if none matches
 
-# 상태 저장 위치 (device_id, 마지막 해시)
+# Runtime state (device_id, last hash)
 STATE_DIR=/var/lib/syno-cert-push
 DEVICE_NAME=CertRenewal
