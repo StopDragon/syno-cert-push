@@ -1,0 +1,29 @@
+# syno-cert-push.conf  — /etc/syno-cert-push.conf 로 두고 권한 600 권장
+# chmod 600 /etc/syno-cert-push.conf
+
+# NPM(Docker)의 letsencrypt live 디렉토리 — '호스트'에서 보이는 경로.
+# 컨테이너 내부는 /data/letsencrypt/live 이며, docker-compose의 볼륨 매핑을 따라간다.
+#   예) 볼륨이  ./data:/data  라면  <compose경로>/data/letsencrypt/live
+NPM_LIVE_DIR=/opt/npm/data/letsencrypt/live
+
+# 시놀로지 드라이브용 단일 도메인
+DRIVE_DOMAIN=drive.ravnus.com
+
+# 시놀로지 DSM 접속 (NPM 서버에서 도달 가능한 내부 IP)
+SYNO_SCHEME=https
+SYNO_HOST=10.0.5.10
+SYNO_PORT=5001
+SYNO_INSECURE=1          # 내부 IP의 https는 CN 불일치 → 1 유지 권장
+
+# 인증서 푸시 권한이 있는 '관리자 그룹' 계정 (전용 계정 권장)
+SYNO_USER=acme
+SYNO_PASS=changeme
+
+# 시놀로지 '제어판 > 보안 > 인증서' 목록에 보이는 교체 대상 인증서의 '설명(desc)'.
+# 이 설명과 일치하는 인증서를 내용만 교체(서비스 매핑 유지).
+SYNO_CERT_DESC=drive.ravnus.com
+SYNO_CREATE=0            # 일치 인증서가 없을 때 신규 생성하려면 1
+
+# 상태 저장 위치 (device_id, 마지막 해시)
+STATE_DIR=/var/lib/syno-cert-push
+DEVICE_NAME=CertRenewal

@@ -1,0 +1,7 @@
+# secrets & runtime state — never commit
+*.conf
+!*.conf.example
+*.log
+device_id
+last_hash
+state/
