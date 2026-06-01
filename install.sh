@@ -57,12 +57,18 @@ detect_npm_dir() {
   if command -v docker >/dev/null 2>&1; then
     cid="$(docker ps --format '{{.ID}} {{.Image}}' 2>/dev/null | grep -iE 'nginx-proxy-manager|jc21' | awk '{print $1}' | head -1 || true)"
     if [ -n "$cid" ]; then
+      # NPM 표준 compose: letsencrypt 가 /etc/letsencrypt 별도 볼륨
+      hostpath="$(docker inspect "$cid" --format '{{range .Mounts}}{{if eq .Destination "/etc/letsencrypt"}}{{.Source}}{{end}}{{end}}' 2>/dev/null || true)"
+      [ -n "$hostpath" ] && [ -d "$hostpath/live" ] && { printf '%s' "$hostpath/live"; return 0; }
+      # 일부 구성: /data 안에 letsencrypt
       hostpath="$(docker inspect "$cid" --format '{{range .Mounts}}{{if eq .Destination "/data"}}{{.Source}}{{end}}{{end}}' 2>/dev/null || true)"
       [ -n "$hostpath" ] && [ -d "$hostpath/letsencrypt/live" ] && { printf '%s' "$hostpath/letsencrypt/live"; return 0; }
     fi
   fi
-  for c in /opt/npm/data /opt/*/data /root/*/data /volume*/docker/*/data /home/*/*/data; do
-    [ -d "$c/letsencrypt/live" ] && { printf '%s' "$c/letsencrypt/live"; return 0; }
+  # docker 접근 불가 시 흔한 경로 스캔 (두 패턴 모두)
+  for c in /opt/npm/letsencrypt /opt/*/letsencrypt /volume*/docker/*/letsencrypt \
+           /opt/npm/data/letsencrypt /opt/*/data/letsencrypt /home/*/*/data/letsencrypt; do
+    [ -d "$c/live" ] && { printf '%s' "$c/live"; return 0; }
   done
   return 1
 }

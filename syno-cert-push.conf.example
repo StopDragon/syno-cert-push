@@ -1,10 +1,14 @@
 # syno-cert-push.conf  — /etc/syno-cert-push.conf 로 두고 권한 600 권장
 # chmod 600 /etc/syno-cert-push.conf
 
-# NPM(Docker)의 letsencrypt live 디렉토리 — '호스트'에서 보이는 경로.
-# 컨테이너 내부는 /data/letsencrypt/live 이며, docker-compose의 볼륨 매핑을 따라간다.
-#   예) 볼륨이  ./data:/data  라면  <compose경로>/data/letsencrypt/live
-NPM_LIVE_DIR=/opt/npm/data/letsencrypt/live
+# NPM(Docker)의 Let's Encrypt 인증서 'live' 디렉토리 — '호스트'에서 보이는 경로.
+# NPM 표준 compose 구성은 letsencrypt를 /etc/letsencrypt 별도 볼륨에 둔다:
+#     volumes:  - ./letsencrypt:/etc/letsencrypt
+#   → 호스트 경로 예) /opt/npm/letsencrypt/live
+# 일부 구성은 /data 안에 둔다 → /opt/npm/data/letsencrypt/live
+# 확인:  docker inspect <npm컨테이너> --format \
+#          '{{range .Mounts}}{{.Source}} -> {{.Destination}}{{"\n"}}{{end}}'
+NPM_LIVE_DIR=/opt/npm/letsencrypt/live
 
 # 시놀로지 드라이브용 단일 도메인
 DRIVE_DOMAIN=drive.ravnus.com
